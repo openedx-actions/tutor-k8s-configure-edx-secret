@@ -1,0 +1,26 @@
+name:  Tutor k8s create edx secret
+description: Github Action to configure a Django secret key for use in Open edX applications
+branding:
+  icon: 'cloud'
+  color: 'orange'
+inputs:
+  namespace:
+    description: 'The Kubernetes namesapce to which the Open edX platform environment will be deployed. Example: openedx-prod'
+    required: true
+    type: string
+runs:
+  using: "composite"
+  steps:
+    #-------------------------------------------------------------
+    # generates an evironment variable of the following form:
+    #     TUTOR_OPENEDX_SECRET_KEY=a-secret-key-value
+    #
+    #-------------------------------------------------------------
+    - name: fetch EDX Secret Key from Kubernetes secrets
+      shell: bash
+      run: |-
+        kubectl get secret edx-secret-key -n ${{ inputs.namespace }}  -o json | jq  '.data | map_values(@base64d)' | jq -r 'keys[] as $k | "TUTOR_\($k|ascii_upcase)=\(.[$k])"' >> $GITHUB_ENV
+
+    - name: tutor config
+      shell: bash
+      run: tutor config save
