@@ -1,4 +1,4 @@
-name:  Tutor k8s create edx secret
+name: Open edX Tutor k8s create edx secret
 description: Github Action to configure a Django secret key for use in Open edX applications
 branding:
   icon: 'cloud'
