@@ -17,9 +17,11 @@ runs:
     #
     #-------------------------------------------------------------
     - name: fetch EDX Secret Key from Kubernetes secrets
-      shell: bash
-      run: |-
-        kubectl get secret edx-secret-key -n ${{ inputs.namespace }}  -o json | jq  '.data | map_values(@base64d)' | jq -r 'keys[] as $k | "TUTOR_\($k|ascii_upcase)=\(.[$k])"' >> $GITHUB_ENV
+      id: get-secret
+      uses: openedx-actions/tutor-k8s-get-secret@v0.0.2
+      with:
+        eks-namespace: ${{ inputs.namespace }}
+        eks-secret-name: edx-secret-key
 
     - name: tutor config
       shell: bash
