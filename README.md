@@ -9,8 +9,11 @@
 
 # tutor-k8s-configure-edx-secret
 
-Github Action to configure a Django secret key for use in Open edX applications
+Github Action to configure a Django secret key for use in Open edX applications.
 
+This action is designed to work seamlessly with Kubernetes secrets created by the Terraform modules contained in [Cookiecutter Tutor Open edX Production Devops Tools](https://github.com/lpm0073/cookiecutter-openedx-devops).
+
+**IMPORTANT SECURITY DISCLAIMER**: Sensitive data contained in Kubernetes secrets is masked in Github Actions logs and console output provided that the secret was created with the Terraform scripts provided in the Cookiecutter. If you are working a Kubernetes secret created outside of the Cookiecutter then **be aware that you run a non-zero risk of your sensitive data becoming exposed inside the Github Actions log data and/or console output**.
 
 ## Usage:
 
@@ -38,11 +41,19 @@ jobs:
 
       # install and configure tutor and kubectl
       - name: Initialize environment
-        uses: openedx-actions/tutor-k8s-init@v0.0.1
+        uses: openedx-actions/tutor-k8s-init@v1.0.0
         with:
           namespace: openedx-prod
 
+      #
+      # ... steps to deploy your Open edX instance to k8s ...
+      #
+
       # This action.
       - name: Configure edx secret
-        uses: openedx-actions/tutor-k8s-configure-edx-secret@v0.0.1
+        uses: openedx-actions/tutor-k8s-configure-edx-secret@v1.0.0
+
+      #
+      # ... more steps to deploy your Open edX instance to k8s ...
+      #
 ```
